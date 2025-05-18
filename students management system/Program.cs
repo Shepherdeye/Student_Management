@@ -1,4 +1,6 @@
-﻿namespace students_management_system
+﻿using System.Runtime.CompilerServices;
+
+namespace students_management_system
 {
     internal class Program
     {
@@ -218,27 +220,91 @@
 
             }
 
-            public Student UpdateStudentInfo(string idOrName,string type, string newValue)
+            public Student UpdateStudentInfo(string idOrName, string type, string newValue)
             {
-                
+
                 Student student = null;
 
                 if (type == "name")
                 {
-                    for(int i=0; i < this.Students.Count; i++)
+                    for (int i = 0; i < this.Students.Count; i++)
                     {
-                        if (idOrName == this.Students[i].name|| idOrName == this.Students[i].studentId)
+                        if (idOrName == this.Students[i].name || idOrName == this.Students[i].studentId)
                         {
                             student = this.Students[i];
-                            student.name=newValue;
+                            student.name = newValue;
                         }
                     }
+                }
+                else if (type == "age")
+                {
+                    int newValueconvert = Convert.ToInt32(newValue);
+
+                    for (int i = 0; i < this.Students.Count; i++)
+                    {
+                        if (idOrName == this.Students[i].name || idOrName == this.Students[i].studentId)
+                        {
+                            student = this.Students[i];
+                            student.age = newValueconvert;
+                        }
+                    }
+                }
+                else if (type == "courses")
+                {
+
+                    for (int i = 0; i < this.Students.Count; i++)
+                    {
+                        if (idOrName == this.Students[i].name || idOrName == this.Students[i].studentId)
+                        {
+                            //student = this.Students[i];
+                            for (int j = 0; j < this.Courses.Count; j++)
+                            {
+                                if (newValue == this.Courses[j].Title)
+                                {
+                                    student = this.Students[i];
+
+                                    student.courses[^1].Title = newValue;
+                                    break;
+
+                                }
+                                else
+                                {
+                                    student = null;
+                                }
+
+
+                            }
+                        }
+                    }
+
+
                 }
 
                 return student;
             }
 
+            public bool DeleteStudent(string id)
+            {
+                bool actionDone = false;
+                for (int i = 0; i < this.Students.Count; i++)
+                {
+                    if (id == this.Students[i].studentId)
+                    {
+                        this.Students.RemoveAt(i);
+                        actionDone = true;
+                        break;
+                    }
+                }
+                if (actionDone == false)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
 
+            }
         }
 
 
@@ -268,8 +334,8 @@
             }
             else
             {
-                Console.ForegroundColor = ConsoleColor.DarkCyan;
-                Console.WriteLine($"\n{message} \n");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write($"{message}");
                 Console.ForegroundColor = ConsoleColor.White;
             }
 
@@ -287,6 +353,7 @@
                 Console.ForegroundColor = ConsoleColor.Magenta;
 
                 Console.WriteLine(@"
+
                     1. Add Student 
                     2. Add Instructor
                     3. Add Course 
@@ -296,16 +363,17 @@
                     7. Show All Instructors
                     8. Find the student by id or name
                     9. Fine the course by id or name
-                    10. Exit
-                    11. Update Student Information
- 
+                   10. Exit
+                   11. Update Student Information
+                   12. Delete Student      
+                   13. Check if the student enrolled in specific course (Bouns)    
+                   14. Return the instructor name by course name  (Bouns)  
 
                     ");
-                Console.ForegroundColor = ConsoleColor.White;
 
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Choose you action from  1 to 10 ");
+                ;
                 Console.ForegroundColor = ConsoleColor.White;
+                PrintingMessage("main", "Choose you action from  1 to 14 :");
 
                 action = Console.ReadLine().Trim();
 
@@ -453,7 +521,7 @@
 
                         if (school.Students.Count > 0)
                         {
-                            PrintingMessage("cyan", "Users Info");
+                            PrintingMessage("cyan", "Students Info");
 
                             for (int i = 0; i < school.Students.Count; i++)
                             {
@@ -569,6 +637,7 @@
                         break;
 
                     case "11":
+
                         PrintingMessage("selector", "Enter the name or id of the student");
                         string inputUpdate = Console.ReadLine().Trim().ToLower();
                         if (inputUpdate == "" || inputUpdate == " " || inputUpdate == null)
@@ -576,23 +645,8 @@
                             PrintingMessage("error", "Name or ID is required");
                             break;
                         }
-                        Student? selectedStudent = null;
 
-
-                        for (int i = 0; i < school.Students.Count; i++)
-                        {
-                            if (inputUpdate == school.Students[i].name || inputUpdate == school.Students[i].studentId)
-                            {
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.WriteLine(school.Students[i].PrintDetails() + "\n");
-                                Console.ForegroundColor = ConsoleColor.White;
-
-                                school.Students[i] = selectedStudent;
-                                break;
-                            }
-                        }
-
-                        PrintingMessage("selector", "enter a value of ('name' or 'age' or 'Courses')");
+                        PrintingMessage("selector", "enter a value of ('name' or 'age' or 'courses')");
 
                         string getEditValue = Console.ReadLine().Trim().ToLower();
 
@@ -614,33 +668,41 @@
                             break;
                         }
 
-                        string selectionChoice = "";
-                        //string newName = "";
-                        //string newCourse = "";
-                        //int newAge = 0;
-                        //int index = -1;
 
-                        if (getEditValue == "name")
+                        Student updatedStu = school.UpdateStudentInfo(inputUpdate, getEditValue, newEditValue);
+
+                        if (updatedStu == null)
                         {
-                            selectedStudent.name = newEditValue;
-
+                            PrintingMessage("error", "can't update the student info");
                         }
-                        else if (getEditValue == "age")
+                        else
                         {
-                            selectedStudent.age = Convert.ToInt32(newEditValue);
-
+                            Console.WriteLine(updatedStu.PrintDetails());
                         }
-                        else if (getEditValue == "Courses")
-                        {
-                            for (int j = 0; j < selectedStudent.courses.Count; j++)
-                            {
-
-                            }
-                        }
-
 
                         break;
                     case "12":
+                        PrintingMessage("selector", "Enter the id of the student that you need to remove");
+                        string deletedId = Console.ReadLine().Trim().ToLower();
+                        if (deletedId == null || deletedId == "" || deletedId == " ")
+                        {
+                            PrintingMessage("error", " Student Id is required ..!");
+                            break;
+                        }
+
+
+                        bool deleteItem = school.DeleteStudent(deletedId);
+
+                        if (deleteItem)
+                        {
+                            PrintingMessage("success", "Student Deleted Successfully ..!");
+
+                        }
+                        else
+                        {
+                            PrintingMessage("error", "Can't Delete the Student ..!");
+
+                        }
 
                         break;
                     case "13":
