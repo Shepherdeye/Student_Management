@@ -305,6 +305,52 @@ namespace students_management_system
                 }
 
             }
+            public bool CheckStudentEnroll(string nameORID, string CoursTitle )
+            {
+
+                bool enrolled = false;
+
+                for (int i = 0; i < Students.Count; i++)
+                {
+                    if (Students[i].name == nameORID || Students[i].studentId == nameORID)
+                    {
+
+                        
+                        for (int j = 0; j < Students[i].courses.Count; j++)
+                        {
+                            if (Students[i].courses[j].Title == CoursTitle)
+                            {
+                                enrolled = true;
+                            }
+                        }
+                    }
+                }
+
+                if (enrolled)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            public string ReturnInstructorName(string courseName)
+            {
+                string InstructorName = "";
+
+                for (int i = 0;i < Courses.Count; i++)
+                {
+                    if (courseName == Courses[i].Title)
+                    {
+                        InstructorName = Courses[i].Instructor;
+                        break;
+                    }
+                }
+
+                return InstructorName;
+                    
+            }
         }
 
 
@@ -462,11 +508,7 @@ namespace students_management_system
                                 school.AddCourse(new Course(Guid.NewGuid().ToString(), CourseTitle, CourseInstructor));
                                 break;
                             }
-                            else
-                            {
-                                Founded = false;
-                                break;
-                            }
+                           
                         }
 
                         if (Founded == true)
@@ -521,7 +563,7 @@ namespace students_management_system
 
                         if (school.Students.Count > 0)
                         {
-                            PrintingMessage("cyan", "Students Info");
+                            PrintingMessage("cyan", "Students Info\n");
 
                             for (int i = 0; i < school.Students.Count; i++)
                             {
@@ -541,7 +583,7 @@ namespace students_management_system
                     case "6":
                         if (school.Courses.Count > 0)
                         {
-                            PrintingMessage("cyan", "Courses Info");
+                            PrintingMessage("cyan", "Courses Info\n");
 
                             for (int i = 0; i < school.Courses.Count; i++)
                             {
@@ -560,7 +602,7 @@ namespace students_management_system
                     case "7":
                         if (school.Instructors.Count > 0)
                         {
-                            PrintingMessage("cyan", "Instructors Info");
+                            PrintingMessage("cyan", "Instructors Info\n");
 
                             for (int i = 0; i < school.Instructors.Count; i++)
                             {
@@ -706,10 +748,57 @@ namespace students_management_system
 
                         break;
                     case "13":
+                        PrintingMessage("selector", "Enter the  Student name or  ID");
+                        string? nameORID = Console.ReadLine().Trim().ToLower();
+
+                        if (string.IsNullOrEmpty(nameORID))
+                        {
+                            PrintingMessage("error", "name or id is required");
+                            break;
+                        }
+                        PrintingMessage("selector", "Enter the  Course Title");
+                        string? CourseTitlE = Console.ReadLine().Trim().ToLower();
+                        if (string.IsNullOrEmpty(CourseTitlE))
+                        {
+                            PrintingMessage("error", "Course Title is required");
+                            break;
+                        }
+
+                        bool enrolled=school.CheckStudentEnroll(nameORID, CourseTitlE);
+                        if (enrolled)
+                        {
+                            PrintingMessage("success", "Student is Enrolled in this course");
+
+                        }
+                        else
+                        {
+                            PrintingMessage("error", "Student isn't Enrolled in this course");
+
+                        }
 
 
                         break;
                     case "14":
+                        PrintingMessage("selector", "Enter the  Course title");
+                        string? CourseTitleForins = Console.ReadLine().Trim().ToLower();
+
+                        if (string.IsNullOrEmpty(CourseTitleForins))
+                        {
+                            PrintingMessage("error", "name or id is required");
+                            break;
+                        }
+                      string instructorNameReturn= school.ReturnInstructorName(CourseTitleForins);
+
+                        if (instructorNameReturn.Length == 0)
+                        {
+                            PrintingMessage("error", "Cant find  the instructor");
+
+                        }
+                        else
+                        {
+                            PrintingMessage("success", $"The instructor is '{instructorNameReturn}'");
+
+                        }
 
                         break;
 
