@@ -143,7 +143,7 @@ namespace students_management_system
 
                 for (int i = 0; i < this.Courses.Count; i++)
                 {
-                    if (courseID == this.Courses[i].CourseId)
+                    if (courseID == this.Courses[i].CourseId || courseID == this.Courses[i].Title)
                     {
                         foundedCourse = true;
                         selectedCourse = this.Courses[i];
@@ -157,7 +157,7 @@ namespace students_management_system
 
                 for (int i = 0; i < this.Students.Count; i++)
                 {
-                    if (studentId == this.Students[i].studentId)
+                    if (studentId == this.Students[i].studentId || studentId == this.Students[i].name)
                     {
                         foundedStudent = true;
                         this.Students[i].Enroll(selectedCourse);
@@ -305,7 +305,7 @@ namespace students_management_system
                 }
 
             }
-            public bool CheckStudentEnroll(string nameORID, string CoursTitle )
+            public bool CheckStudentEnroll(string nameORID, string CoursTitle)
             {
 
                 bool enrolled = false;
@@ -315,7 +315,7 @@ namespace students_management_system
                     if (Students[i].name == nameORID || Students[i].studentId == nameORID)
                     {
 
-                        
+
                         for (int j = 0; j < Students[i].courses.Count; j++)
                         {
                             if (Students[i].courses[j].Title == CoursTitle)
@@ -339,7 +339,7 @@ namespace students_management_system
             {
                 string InstructorName = "";
 
-                for (int i = 0;i < Courses.Count; i++)
+                for (int i = 0; i < Courses.Count; i++)
                 {
                     if (courseName == Courses[i].Title)
                     {
@@ -349,7 +349,7 @@ namespace students_management_system
                 }
 
                 return InstructorName;
-                    
+
             }
         }
 
@@ -508,7 +508,7 @@ namespace students_management_system
                                 school.AddCourse(new Course(Guid.NewGuid().ToString(), CourseTitle, CourseInstructor));
                                 break;
                             }
-                           
+
                         }
 
                         if (Founded == true)
@@ -526,23 +526,23 @@ namespace students_management_system
 
                     case "4":
 
-                        PrintingMessage("selector", "Enter the ID of the Course");
+                        PrintingMessage("selector", "Enter the ID or Title of the Course");
 
                         string? CourseID = Console.ReadLine().Trim().ToLower();
 
                         if (CourseID == null || CourseID == " " || CourseID == "")
                         {
-                            PrintingMessage("error", "course ID is required..!");
+                            PrintingMessage("error", "course ID or title is required..!");
                             break;
                         }
 
-                        PrintingMessage("selector", "Enter the ID of the Student");
+                        PrintingMessage("selector", "Enter the ID or name of the Student");
 
                         string? EnStudentID = Console.ReadLine().Trim().ToLower();
 
                         if (EnStudentID == null || EnStudentID == " " || EnStudentID == "")
                         {
-                            PrintingMessage("error", "Student ID is required..!");
+                            PrintingMessage("error", "Student ID or name is required..!");
 
                             break;
                         }
@@ -764,7 +764,7 @@ namespace students_management_system
                             break;
                         }
 
-                        bool enrolled=school.CheckStudentEnroll(nameORID, CourseTitlE);
+                        bool enrolled = school.CheckStudentEnroll(nameORID, CourseTitlE);
                         if (enrolled)
                         {
                             PrintingMessage("success", "Student is Enrolled in this course");
@@ -787,7 +787,7 @@ namespace students_management_system
                             PrintingMessage("error", "name or id is required");
                             break;
                         }
-                      string instructorNameReturn= school.ReturnInstructorName(CourseTitleForins);
+                        string instructorNameReturn = school.ReturnInstructorName(CourseTitleForins);
 
                         if (instructorNameReturn.Length == 0)
                         {
